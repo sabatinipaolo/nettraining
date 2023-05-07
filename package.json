@@ -1,0 +1,23 @@
+{
+  "name": "nettraining",
+  "version": "1.0.0",
+  "description": "Un sito per allenarsi a diventare smart ed esperti in problematiche inerenti al networking",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "format": "prettier --write"
+  },
+  "keywords": [
+    "network",
+    "IPv4"
+  ],
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "prettier": "^2.8.8",
+    "vite": "^4.3.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sabatinipaolo/nettraining"
+  }
+}
