@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <meta charset="utf-8" />
+  <title>CIDR 2 NM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      background-color: rgb(192, 192, 192);
+      caret-color: transparent;
+    }
+
+    .app-container {
+      margin: auto;
+      display: block;
+      width: 90vw;
+     
+    }
+
+    .info {
+      text-align: center;
+      font-size: 8vw;
+      height: 8vw;
+      caret-color: transparent;
+    }
+
+    .kbo {
+      margin: auto;
+      display: grid;
+      grid-template-columns: 32% 32% 32% 0%; /* la quarta colonna virtuale per far funzionare <br> anche senza style */
+      column-gap: 2%;
+      row-gap: 2%;
+    }
+
+    .kbo>.doppio {
+      grid-column: span 2;
+    }
+
+    .kbo>.triplo {
+      grid-column: span 3;
+    }
+
+    .kbo>input {
+      font-size: 6vw;
+      height : 15vw;
+    }
+  </style>
+  <script>
+    "use strict";
+    var cidr;
+    var netmask;
+    var messaggio;
+    var stato;
+    var box1;
+    var campoEditatoDaUtente;
+    var deveIndovinareNetmask ;
+    const stati = {
+      APP_ASPETTA_RISPOSTA: 1,
+      APP_ASPETTA_CLICK_UTENTE_PER_NUOVO_QUIZ: 2
+    };
+    Object.freeze(stati);                               //nota: rende read only stato, in strict mode ogni tentativo in scrittura genera un eccezione
+
+    var cidr2nm = ["0.0.0.0",
+        "128.0.0.0",
+        "192.0.0.0",
+        "224.0.0.0",
+        "240.0.0.0",
+        "248.0.0.0",
+        "252.0.0.0",
+        "254.0.0.0",
+        "255.0.0.0",
+        "255.128.0.0",
+        "255.192.0.0",
+        "255.224.0.0",
+        "255.240.0.0",
+        "255.248.0.0",
+        "255.252.0.0",
+        "255.254.0.0",
+        "255.255.0.0",
+        "255.255.128.0",
+        "255.255.192.0",
+        "255.255.224.0",
+        "255.255.240.0",
+        "255.255.248.0",
+        "255.255.252.0",
+        "255.255.254.0",
+        "255.255.255.0",
+        "255.255.255.128",
+        "255.255.255.192",
+        "255.255.255.224",
+        "255.255.255.240",
+        "255.255.255.248",
+        "255.255.255.252",
+        "255.255.255.254",
+        "255.255.255.255"];
+    
+    function generaNuovoQuiz() {
+
+      cancellaSoluzione();
+      cidr.inNum = Math.floor(Math.random() * 32) + 1;
+
+      if ( Math.floor(Math.random()*2)==0 ) {
+        deveIndovinareNetmask = true ;
+        campoEditatoDaUtente = netmask ;
+        cidr.innerHTML = cidr.inNum;
+      } else {
+        deveIndovinareNetmask=false;
+        campoEditatoDaUtente = cidr ;
+        netmask.innerHTML = cidr2nm[cidr.inNum];
+      }
+
+      
+      stato = stati.APP_ASPETTA_RISPOSTA;
+
+    };
+
+    function controllaRisposta() {
+      let intero = parseInt(cidr.innerHTML);
+/*       if ( intero== NaN ) {
+        //risposta errata sicuramente
+        messaggio.innerHTML = " Nooo !!!";              //todo: sostituire con una funzione RispostaErrata()
+        box1.style.background = "#f97070";        
+      } 
+      else { */
+            if (netmask.innerHTML == cidr2nm[intero]) {    //todo: sostituire con una funzione isRispostaCorretta()
+            messaggio.innerHTML = " Yes !!!";               //todo: sostituire con una funzione RispostaCorretta()
+            box1.style.background = "#7ca47c";
+          } 
+            else {
+            messaggio.innerHTML = " Nooo !!!";              //todo: sostituire con una funzione RispostaErrata()
+            box1.style.background = "#f97070";
+          }
+      // }
+
+      stato = stati.APP_ASPETTA_CLICK_UTENTE_PER_NUOVO_QUIZ;
+
+    }
+
+    function cancellaSoluzione() {
+
+      messaggio.innerHTML = "";
+      netmask.innerHTML = "";
+      cidr.innerHTML = "";
+      box1.style.background = "";
+
+    };
+
+    function utenteVuoleUnAltroQuiz() {                    //todo: troavare un nome più esplicativo
+
+      if (stato == stati.APP_ASPETTA_CLICK_UTENTE_PER_NUOVO_QUIZ) {
+        generaNuovoQuiz();
+      }
+
+    }
+
+    function kbOnScreenHandler(event) {                    //todo: troavare un nome più esplicativo
+
+      if (stato == stati.APP_ASPETTA_CLICK_UTENTE_PER_NUOVO_QUIZ) {
+        return;
+      }
+      //assert: stato == stati.APP_ASPETTA_RISPOSTA
+      if (event.target.value == "del") {
+        campoEditatoDaUtente.innerHTML = campoEditatoDaUtente.innerHTML.slice(0, campoEditatoDaUtente.innerHTML.length - 1);
+        return;
+      }
+
+      campoEditatoDaUtente.innerHTML += event.target.value;
+
+      //question: stop bubbling ?
+
+    }
+
+    function submitHandler() {
+
+      if (stato == stati.APP_ASPETTA_CLICK_UTENTE_PER_NUOVO_QUIZ) {
+        return;
+      }
+      //assert: stato == stati.APP_ASPETTA_RISPOSTA
+      controllaRisposta();
+      stato = stati.APP_ASPETTA_CLICK_UTENTE_PER_NUOVO_QUIZ;
+
+    }
+
+    function setup() {
+
+      cidr = document.getElementById("cidr");
+      netmask = document.getElementById("netmask");
+      netmask.innerHTML = "";
+      messaggio = document.getElementById("messaggio");
+      box1 = document.getElementById("box1");
+      generaNuovoQuiz();
+      // document.addEventListener("click", globalClickHandler);
+
+    }
+
+  </script>
+
+</head>
+
+<body onload="setup()">
+  <div id="box1" onclick="utenteVuoleUnAltroQuiz()">
+    <div class="info">
+      / <span id="cidr"></span>
+    </div>
+    <br>
+    <div class="info" id="netmask"></div>
+    <br>
+    <div class="info" id="messaggio"></div>
+    <br>
+  </div>
+  <div class="kbo">
+    <input type="button" class="doppio" value="255" onclick="kbOnScreenHandler(event)">
+    <input type="button" value="." onclick="kbOnScreenHandler(event)">
+    <br />
+    <input type="button" value="7" onclick="kbOnScreenHandler(event)">
+    <input type="button" value="8" onclick="kbOnScreenHandler(event)">
+    <input type="button" value="9" onclick="kbOnScreenHandler(event)">
+    <br />
+    <input type="button" value="4" onclick="kbOnScreenHandler(event)">
+    <input type="button" value="5" onclick="kbOnScreenHandler(event)">
+    <input type="button" value="6" onclick="kbOnScreenHandler(event)">
+    <br />
+    <input type="button" value="1" onclick="kbOnScreenHandler(event)">
+    <input type="button" value="2" onclick="kbOnScreenHandler(event)">
+    <input type="button" value="3" onclick="kbOnScreenHandler(event)">
+    <br />
+    <input type="button" value="0" onclick="kbOnScreenHandler(event)">
+    <input type="button" value="." onclick="kbOnScreenHandler(event)">
+    <input type="button" value="del" onclick="kbOnScreenHandler(event)">
+    <br>
+    <input type="button" class="triplo" value="controlla" onclick="submitHandler()">
+  </div>
+</body>
+
+</html>
