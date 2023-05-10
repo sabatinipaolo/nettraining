@@ -10,14 +10,14 @@
       var ui;
       //var quiz;
       class Quiz {
-        netMasks = [0xffffff80,0xffffffc0,0xffffffe0,0xfffffff0,0xfffffff8,0xfffffffc,0xfffffffe ];
-
-        constructor() {
-          //this.quiz = new Quiz();
-        }
+        netMasks = [
+          0xffffff80, 0xffffffc0, 0xffffffe0, 0xfffffff0, 0xfffffff8,
+          0xfffffffc, 0xfffffffe,
+        ];
 
         nuovo() {
-          this.netMask = this.netMasks[Math.floor(Math.random() * 7)];
+          this.netMask =
+            this.netMasks[Math.floor(Math.random() * this.netMasks.length)];
           this.IP = Math.floor(Math.random() * 0xf000000);
           this.netAddr = this.calcolaNetAddr(this.IP, this.netMask);
           this.firstAddr = this.calcolaFirstAddr(this.IP, this.netMask);
@@ -183,8 +183,6 @@
           if (numero_risposte_esatte == 4) {
             this.bloccaGiocoInAttesaDiUnclick();
           }
-
-          //this.bloccaGiocoInAttesaDiUnclick();
         }
 
         bloccaGiocoInAttesaDiUnclick() {
@@ -210,7 +208,6 @@
       }
 
       function setup() {
-        //quiz = new Quiz();
         ui = new UI(); //TO DO creare locale ..
       }
     </script>

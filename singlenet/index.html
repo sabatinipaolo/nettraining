@@ -12,12 +12,9 @@
       class Quiz {
         netMasks = [0xffffff00, 0xffff0000, 0xff000000];
 
-        constructor() {
-          //this.quiz = new Quiz();
-        }
-
         nuovo() {
-          this.netMask = this.netMasks[Math.floor(Math.random() * 3)];
+          this.netMask =
+            this.netMasks[Math.floor(Math.random() * this.netMasks.length)];
           this.IP = Math.floor(Math.random() * 0xf000000);
           this.netAddr = this.calcolaNetAddr(this.IP, this.netMask);
           this.firstAddr = this.calcolaFirstAddr(this.IP, this.netMask);
@@ -183,8 +180,6 @@
           if (numero_risposte_esatte == 4) {
             this.bloccaGiocoInAttesaDiUnclick();
           }
-
-          //this.bloccaGiocoInAttesaDiUnclick();
         }
 
         bloccaGiocoInAttesaDiUnclick() {
@@ -210,7 +205,6 @@
       }
 
       function setup() {
-        //quiz = new Quiz();
         ui = new UI(); //TO DO creare locale ..
       }
     </script>
