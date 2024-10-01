@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <title>SingleNet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <script>
+      "use strict";
+
+      const min_int_indirizzo=  1* 256*256*256 
+      const max_int_indirizzo=223* 256*256*256  + 255* 256*256 + 255* 256*256 + 255 ;
+
+      netmasks81624 =[ 8,16,24 ]; 
+      function tipoIP(n){
+             if (n==0) return "rete" 
+        else if (n==1) return "host"
+        else if (n==2) return "broadcast"
+        else return undefined;
+
+      }
+      
+      var ip={};
+      function Ip (){
+        this.nuovo=function ( ){
+
+
+            this.tipo= tipoIP(Math.floor(Math.random() * 3));
+
+            
+
+
+
+            this.int = Math.floor(Math.random() * (max_int_indirizzo - min_int_indirizzo));
+            
+            let appo=this.int;
+
+            this.o1= appo % 256; 
+            appo = Math.floor( appo / 256);
+            this.o2= appo % 256; 
+            appo = Math.floor( appo / 256);
+            this.o3= appo % 256;
+            appo = Math.floor( appo / 256);
+            this.o4= appo % 256; 
+
+
+            this.string= this.o4 + "." + this.o3 + "." + this.o2 +"." + this.o1;
+
+
+
+        }  
+      }  
+
+
+      
+      function setup() {
+        ip = new Ip();
+        ip.nuovo();
+        document.getElementById("IP").innerHTML = ip.string;
+
+      }
+    </script>
+  </head>
+
+  <body onload="setup()">
+    <main class="layout">
+      <div class="ui" id="ui">
+        <div class="field">
+          <span class="label"> IP Address</span>
+          <span class="info" id="IP">192.168.1.1</span>
+        </div>
+        <div class="field">
+          <span class="label"> NetMask</span>
+          <span class="info" id="netMask"></span>
+        </div>
+        <div class="field">
+          <span class="label"> Net Address</span>
+          <div
+            class="input"
+            id="netAddr"
+            onclick="ui.onInputClick(event)"
+          ></div>
+        </div>
+        <div class="field">
+          <span class="label"> First Address</span>
+          <div
+            class="input"
+            id="firstAddr"
+            onclick="ui.onInputClick(event)"
+          ></div>
+        </div>
+        <div class="field">
+          <span class="label"> Last Address</span
+          ><span
+            class="input"
+            id="lastAddr"
+            onclick="ui.onInputClick(event)"
+          ></span>
+        </div>
+        <div class="field">
+          <span class="label"> BroadCast</span
+          ><span
+            class="input"
+            id="broadAddr"
+            onclick="ui.onInputClick(event)"
+          ></span>
+        </div>
+      </div>
+
+      <div class="kbo">
+        <input type="button" value="7" onclick="ui.onButtonClick(event)" />
+        <input type="button" value="8" onclick="ui.onButtonClick(event)" />
+        <input type="button" value="9" onclick="ui.onButtonClick(event)" />
+        <input type="button" value="4" onclick="ui.onButtonClick(event)" />
+        <input type="button" value="5" onclick="ui.onButtonClick(event)" />
+        <input type="button" value="6" onclick="ui.onButtonClick(event)" />
+        <input type="button" value="1" onclick="ui.onButtonClick(event)" />
+        <input type="button" value="2" onclick="ui.onButtonClick(event)" />
+        <input type="button" value="3" onclick="ui.onButtonClick(event)" />
+        <input type="button" value="." onclick="ui.onButtonClick(event)" />
+        <input type="button" value="0" onclick="ui.onButtonClick(event)" />
+        <input type="button" value="del" onclick="ui.onButtonClick(event)" />
+        <input
+          type="button"
+          id="check"
+          class="full"
+          value="controlla"
+          onclick="ui.controlla()"
+        />
+      </div>
+      <div
+        id="alert"
+        style="
+          position: fixed;
+          top: 0px;
+          left: 0px;
+          width: 100%;
+          height: 100%;
+          display: none;
+          z-index: 100;
+          text-align: center;
+          vertical-align: 50%;
+          color: green;
+          font-weight: bold;
+          font-size: 20vw;
+        "
+        onclick="ui.sbloccaIlGioco()"
+      >
+        OK
+      </div>
+    </main>
+  </body>
+</html>
